@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# change directory to the path of the script
+cd "${0%/*}"
+
+cd worker
+
+echo "Creating custom_make.txt ..."
+echo "make build ARCH=osx-x86-64-modern" > custom_make.txt
+
+mkdir -p testing
+
+cd testing
+
+echo "Downloading the archive cutechess-cli-macosx-for-fishnet.zip ..."
+
+mkdir -p mac
+url=http://cassio.free.fr/stockfish/cutechess-cli-macosx-for-fishnet.zip
+dest=cutechess-cli-macosx-for-fishnet.zip
+curl $url -o mac/$dest
+
+echo "Unzipping the archive ..."
+
+cd mac
+unzip -o -q $dest
+cd ..
+
+echo "Copying libraries ..."
+
+cp ./mac/cutechess-cli-macosx-for-fishnet/cutechess-cli cutechess-cli
+cp ./mac/cutechess-cli-macosx-for-fishnet/libcutechess.1.dylib libcutechess.1.dylib
+cp ./mac/cutechess-cli-macosx-for-fishnet/QtCore QtCore
+
+echo "Creating link for QtCore ..."
+
+echo "Please type in the password of your Macintosh user account"
+
+ilaripath=/Users/ilari/Qt//5.1.0/clang_64/lib/QtCore.framework/Versions/5/
+sudo mkdir -p -v $ilaripath
+sudo ln -f QtCore $ilaripath/QtCore
+
+echo "Installation finished!"
+cd ..
